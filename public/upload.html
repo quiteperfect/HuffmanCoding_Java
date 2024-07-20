@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Upload File</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <h1>Upload a File for Compression</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+      <button type="button" onclick="compressFile()">Compress</button>
+      <button type="button" onclick="decompressFile()">Decompress</button>
+    </form>
+    <script>
+      async function compressFile() {
+        const form = document.getElementById("uploadForm");
+        const formData = new FormData(form);
+        const response = await fetch("/compress", {
+          method: "POST",
+          body: formData,
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "compressed_file";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      }
+
+      async function decompressFile() {
+        const form = document.getElementById("uploadForm");
+        const formData = new FormData(form);
+        const response = await fetch("/decompress", {
+          method: "POST",
+          body: formData,
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "decompressed_file";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      }
+    </script>
+  </body>
+</html>
